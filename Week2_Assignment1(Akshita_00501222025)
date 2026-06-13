@@ -1,0 +1,526 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM6KHvuob25jqz1+owWPBL4",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Akshita06-tech/Assignment_Akshita_00501222025/blob/main/Week2_Assignment1(Akshita_00501222025)\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "id": "v8eOs349U8l3"
+      },
+      "outputs": [],
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "\n",
+        "from sklearn.preprocessing import LabelEncoder\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.tree import DecisionTreeClassifier\n",
+        "from sklearn.metrics import accuracy_score, confusion_matrix\n",
+        "from sklearn.neighbors import KNeighborsClassifier\n",
+        "from sklearn.linear_model import LinearRegression"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q1\n",
+        "# Load the dataset and display the first five records\n",
+        "\n",
+        "df = pd.read_csv(\"Netflix_User_Analytics.csv\")\n",
+        "\n",
+        "print(\"First Five Records:\")\n",
+        "print(df.head())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8bQ82200Vv1e",
+        "outputId": "ed8c191b-d18d-4abb-cb51-25f2f9226019"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "First Five Records:\n",
+            "   UserID  Age  Gender SubscriptionType  WatchHoursPerWeek  DevicesUsed  \\\n",
+            "0    1001   22  Female            Basic                 23            5   \n",
+            "1    1002   55    Male            Basic                  9            4   \n",
+            "2    1003   49    Male            Basic                  8            3   \n",
+            "3    1004   39  Female          Premium                 19            5   \n",
+            "4    1005   38  Female          Premium                 23            5   \n",
+            "\n",
+            "  FavoriteGenre  AdClicks  MonthlySpend SubscriptionRenewed  \n",
+            "0        Comedy        13           353                  No  \n",
+            "1         Drama        14           317                 Yes  \n",
+            "2        Comedy        16           309                  No  \n",
+            "3         Drama        45           833                 Yes  \n",
+            "4        Sci-Fi        24           804                 Yes  \n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q2\n",
+        "# Determine number of rows and columns\n",
+        "\n",
+        "print(\"Rows and Columns:\")\n",
+        "print(df.shape)\n",
+        "\n",
+        "# Q3\n",
+        "# Display all column names\n",
+        "\n",
+        "print(\"\\nColumn Names:\")\n",
+        "print(df.columns)\n",
+        "\n",
+        "# Q4\n",
+        "# Identify numerical and categorical features\n",
+        "\n",
+        "print(\"\\nNumerical Features:\")\n",
+        "print(df.select_dtypes(include=np.number).columns)\n",
+        "\n",
+        "print(\"\\nCategorical Features:\")\n",
+        "print(df.select_dtypes(exclude=np.number).columns)\n",
+        "\n",
+        "# Q5\n",
+        "# Check for missing values\n",
+        "\n",
+        "print(\"\\nMissing Values:\")\n",
+        "print(df.isnull().sum())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "01tmYZbhZGAw",
+        "outputId": "86e18cb7-4b40-4e58-abb7-2004b1a66020"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Rows and Columns:\n",
+            "(750, 10)\n",
+            "\n",
+            "Column Names:\n",
+            "Index(['UserID', 'Age', 'Gender', 'SubscriptionType', 'WatchHoursPerWeek',\n",
+            "       'DevicesUsed', 'FavoriteGenre', 'AdClicks', 'MonthlySpend',\n",
+            "       'SubscriptionRenewed'],\n",
+            "      dtype='object')\n",
+            "\n",
+            "Numerical Features:\n",
+            "Index(['UserID', 'Age', 'WatchHoursPerWeek', 'DevicesUsed', 'AdClicks',\n",
+            "       'MonthlySpend'],\n",
+            "      dtype='object')\n",
+            "\n",
+            "Categorical Features:\n",
+            "Index(['Gender', 'SubscriptionType', 'FavoriteGenre', 'SubscriptionRenewed'], dtype='object')\n",
+            "\n",
+            "Missing Values:\n",
+            "UserID                 0\n",
+            "Age                    0\n",
+            "Gender                 0\n",
+            "SubscriptionType       0\n",
+            "WatchHoursPerWeek      0\n",
+            "DevicesUsed            0\n",
+            "FavoriteGenre          0\n",
+            "AdClicks               0\n",
+            "MonthlySpend           0\n",
+            "SubscriptionRenewed    0\n",
+            "dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q6\n",
+        "# Calculate average age of users\n",
+        "\n",
+        "print(\"Average Age:\")\n",
+        "print(df[\"Age\"].mean())\n",
+        "\n",
+        "# Q7\n",
+        "# Calculate average watch hours per week\n",
+        "\n",
+        "print(\"\\nAverage Watch Hours Per Week:\")\n",
+        "print(df[\"WatchHoursPerWeek\"].mean())\n",
+        "\n",
+        "# Q8\n",
+        "# Calculate average monthly spending\n",
+        "\n",
+        "print(\"\\nAverage Monthly Spending:\")\n",
+        "print(df[\"MonthlySpend\"].mean())\n",
+        "\n",
+        "# Q9\n",
+        "# Count users in each subscription category\n",
+        "\n",
+        "print(\"\\nUsers in Each Subscription Category:\")\n",
+        "print(df[\"SubscriptionType\"].value_counts())\n",
+        "\n",
+        "# Q10\n",
+        "# Percentage of users who renewed subscriptions\n",
+        "\n",
+        "renew_percentage = (df[\"SubscriptionRenewed\"]==\"Yes\").mean()*100\n",
+        "\n",
+        "print(\"\\nPercentage of Renewed Users:\")\n",
+        "print(renew_percentage,\"%\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hphZeULDZgel",
+        "outputId": "0027bbe6-7b51-427f-e2a6-1c063b65f42d"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Average Age:\n",
+            "41.824\n",
+            "\n",
+            "Average Watch Hours Per Week:\n",
+            "14.236\n",
+            "\n",
+            "Average Monthly Spending:\n",
+            "689.9053333333334\n",
+            "\n",
+            "Users in Each Subscription Category:\n",
+            "SubscriptionType\n",
+            "Basic      342\n",
+            "Premium    279\n",
+            "VIP        129\n",
+            "Name: count, dtype: int64\n",
+            "\n",
+            "Percentage of Renewed Users:\n",
+            "46.266666666666666 %\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q11\n",
+        "# Convert categorical features into numerical form\n",
+        "\n",
+        "df_encoded = df.copy()\n",
+        "\n",
+        "encoder = LabelEncoder()\n",
+        "\n",
+        "for col in df_encoded.select_dtypes(include='object').columns:\n",
+        "    df_encoded[col] = encoder.fit_transform(df_encoded[col])\n",
+        "\n",
+        "print(df_encoded.head())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yz-cXUlAZsI5",
+        "outputId": "3a1e3791-f36e-4ee8-cb42-bfda2b4f5b5f"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "   UserID  Age  Gender  SubscriptionType  WatchHoursPerWeek  DevicesUsed  \\\n",
+            "0    1001   22       0                 0                 23            5   \n",
+            "1    1002   55       1                 0                  9            4   \n",
+            "2    1003   49       1                 0                  8            3   \n",
+            "3    1004   39       0                 1                 19            5   \n",
+            "4    1005   38       0                 1                 23            5   \n",
+            "\n",
+            "   FavoriteGenre  AdClicks  MonthlySpend  SubscriptionRenewed  \n",
+            "0              1        13           353                    0  \n",
+            "1              2        14           317                    1  \n",
+            "2              1        16           309                    0  \n",
+            "3              2        45           833                    1  \n",
+            "4              5        24           804                    1  \n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q12\n",
+        "# Define feature set X and target variable y\n",
+        "\n",
+        "X = df_encoded.drop(\"SubscriptionRenewed\", axis=1)\n",
+        "\n",
+        "y = df_encoded[\"SubscriptionRenewed\"]\n",
+        "\n",
+        "# Q13\n",
+        "# Split dataset into training and testing sets\n",
+        "\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X,\n",
+        "    y,\n",
+        "    test_size=0.20,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "print(\"Training Set Shape:\")\n",
+        "print(X_train.shape)\n",
+        "\n",
+        "print(\"\\nTesting Set Shape:\")\n",
+        "print(X_test.shape)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gnZx8YHZZ_JP",
+        "outputId": "7594cea3-67d7-4c8a-f87c-39b05e61fdf7"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Training Set Shape:\n",
+            "(600, 9)\n",
+            "\n",
+            "Testing Set Shape:\n",
+            "(150, 9)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q14\n",
+        "# Train Decision Tree model\n",
+        "\n",
+        "dt_model = DecisionTreeClassifier(random_state=42)\n",
+        "\n",
+        "dt_model.fit(X_train, y_train)\n",
+        "\n",
+        "y_pred_dt = dt_model.predict(X_test)\n",
+        "\n",
+        "# Q15\n",
+        "# Evaluate model accuracy\n",
+        "\n",
+        "dt_accuracy = accuracy_score(y_test, y_pred_dt)\n",
+        "\n",
+        "print(\"Decision Tree Accuracy:\")\n",
+        "print(dt_accuracy)\n",
+        "\n",
+        "# Q16\n",
+        "# Generate confusion matrix\n",
+        "\n",
+        "cm = confusion_matrix(y_test, y_pred_dt)\n",
+        "\n",
+        "print(\"\\nConfusion Matrix:\")\n",
+        "print(cm)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rGydR6m4Z66R",
+        "outputId": "efc1507e-5cac-41c3-d236-76fed7314507"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Decision Tree Accuracy:\n",
+            "0.5666666666666667\n",
+            "\n",
+            "Confusion Matrix:\n",
+            "[[50 32]\n",
+            " [33 35]]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q17\n",
+        "# Train KNN model with K = 5\n",
+        "\n",
+        "knn_model = KNeighborsClassifier(n_neighbors=5)\n",
+        "\n",
+        "knn_model.fit(X_train, y_train)\n",
+        "\n",
+        "y_pred_knn = knn_model.predict(X_test)\n",
+        "\n",
+        "# Q18\n",
+        "# Compare KNN accuracy with Decision Tree\n",
+        "\n",
+        "knn_accuracy = accuracy_score(y_test, y_pred_knn)\n",
+        "\n",
+        "print(\"KNN Accuracy:\")\n",
+        "print(knn_accuracy)\n",
+        "\n",
+        "print(\"\\nDecision Tree Accuracy:\")\n",
+        "print(dt_accuracy)\n",
+        "\n",
+        "if dt_accuracy > knn_accuracy:\n",
+        "    print(\"\\nDecision Tree Performs Better\")\n",
+        "else:\n",
+        "    print(\"\\nKNN Performs Better\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XcCAOfIzaYW9",
+        "outputId": "088c4fcf-b83c-4e47-a76d-61a5dc7794b2"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "KNN Accuracy:\n",
+            "0.6\n",
+            "\n",
+            "Decision Tree Accuracy:\n",
+            "0.5666666666666667\n",
+            "\n",
+            "KNN Performs Better\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Q19\n",
+        "# Train Linear Regression model to predict Monthly Spend\n",
+        "\n",
+        "X_reg = df_encoded.drop(\"MonthlySpend\", axis=1)\n",
+        "\n",
+        "y_reg = df_encoded[\"MonthlySpend\"]\n",
+        "\n",
+        "X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(\n",
+        "    X_reg,\n",
+        "    y_reg,\n",
+        "    test_size=0.20,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "lr_model = LinearRegression()\n",
+        "\n",
+        "lr_model.fit(X_train_reg, y_train_reg)\n",
+        "\n",
+        "# Q20\n",
+        "# Predict monthly spending for a new user\n",
+        "\n",
+        "prediction = lr_model.predict([X_test_reg.iloc[0]])\n",
+        "\n",
+        "print(\"Predicted Monthly Spending:\")\n",
+        "print(\"₹\", prediction[0])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RYtcTUAkacxY",
+        "outputId": "af1cc751-961e-4276-f68b-68fdfa5d74a7"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Predicted Monthly Spending:\n",
+            "₹ 838.5871865891327\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names\n",
+            "  warnings.warn(\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Business Reflection Questions\n",
+        "\n",
+        "print(\"1. Subscription Type, Watch Hours, Monthly Spend and Devices Used may influence renewal.\")\n",
+        "\n",
+        "print(\"2. Subscription renewal is a classification problem because output is Yes or No.\")\n",
+        "\n",
+        "print(\"3. Monthly spending is a regression problem because it is a continuous numerical value.\")\n",
+        "\n",
+        "print(\"4. The algorithm with higher accuracy performs better.\")\n",
+        "\n",
+        "print(\"5. Netflix can use predictions to identify users likely to leave and provide personalized offers.\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "b8Pyvhp_aoq8",
+        "outputId": "ec7863bf-21e1-4b45-d017-5c6a6676658f"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "1. Subscription Type, Watch Hours, Monthly Spend and Devices Used may influence renewal.\n",
+            "2. Subscription renewal is a classification problem because output is Yes or No.\n",
+            "3. Monthly spending is a regression problem because it is a continuous numerical value.\n",
+            "4. The algorithm with higher accuracy performs better.\n",
+            "5. Netflix can use predictions to identify users likely to leave and provide personalized offers.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
